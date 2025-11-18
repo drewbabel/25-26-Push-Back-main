@@ -77,18 +77,21 @@ void opcontrol() {
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
 	
 	// Motor configuration based on your specifications:
-	// Port 1: Top right motor
-	// Port 2: Bottom right motor  
-	// Port 3: Top left motor
-	// Port 4: Bottom left motor
+	// Left Motor Group : Ports 1, 2, 3
+	// Right Motor Group: Ports 4, 5, 6
 	
-	// Create left side motor group (ports 3 and 4)
-	// Port 4 (bottom left) needs to be reversed to match port 3 (top left)
-	pros::MotorGroup left_mg({3, -4});
+	// Create left side motor group (ports 1 and 2 and 3)
+	// pros::MotorGroup left_mg({1, 2, 3});
+	pros::MotorGroup left_mg({-1, -2, -3});
 	
-	// Create right side motor group (ports 1 and 2)  
-	// Port 1 (top right) needs to be reversed to match port 2 (bottom right)
-	pros::MotorGroup right_mg({-1, 2});
+	
+	// Create right side motor group (ports 4 and 5 and 6)  
+	// pros::MotorGroup right_mg({4, 5, -6});
+	pros::MotorGroup right_mg({4, 5, +6});
+
+	pros::Motor intake(7);
+
+	
 
 	while (true) {
 		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
@@ -97,10 +100,13 @@ void opcontrol() {
 
 		// Arcade control scheme
 		// Left joystick up/down (Y-axis) controls forward/backward movement
-		int forward = master.get_analog(ANALOG_LEFT_Y);    
+		int forward = master.get_analog(ANALOG_LEFT_Y);  
 		
 		// Right joystick left/right (X-axis) controls turning
-		int turn = master.get_analog(ANALOG_RIGHT_X);      
+		int turn = master.get_analog(ANALOG_RIGHT_X);    
+		
+		int intake_forward = master.get_digital(pros::E_CONTROLLER_DIGITAL_L1);
+		int intake_backward = master.get_digital(pros::E_CONTROLLER_DIGITAL_L2);
 
 		// Calculate motor speeds for arcade drive
 		// Left side: forward - turn (subtract turn to turn right when joystick pushed right)
@@ -111,6 +117,17 @@ void opcontrol() {
 		// Set motor speeds
 		left_mg.move(left_speed);
 		right_mg.move(right_speed);
+
+		// Move intake 
+		if (intake_forward){
+			intake.move(127);
+		}
+		else if(intake_backward){
+			intake.move(-127);
+		}
+		else{
+			intake.move(0);
+		}
 		
 		// Display current joystick values and motor speeds on LCD for debugging
 		pros::lcd::print(1, "Forward: %d, Turn: %d", forward, turn);
