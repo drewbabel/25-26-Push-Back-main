@@ -120,10 +120,10 @@ void opcontrol() {
 
 		// Move intake 
 		if (intake_forward){
-			intake.move(127);
+			intake.move(-127);
 		}
 		else if(intake_backward){
-			intake.move(-127);
+			intake.move(127);
 		}
 		else{
 			intake.move(0);
