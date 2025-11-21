@@ -82,12 +82,12 @@ void opcontrol() {
 	
 	// Create left side motor group (ports 1 and 2 and 3)
 	// pros::MotorGroup left_mg({1, 2, 3});
-	pros::MotorGroup left_mg({-1, -2, -3});
-	
+	pros::MotorGroup left_mg({4, 5, +6});
+
 	
 	// Create right side motor group (ports 4 and 5 and 6)  
 	// pros::MotorGroup right_mg({4, 5, -6});
-	pros::MotorGroup right_mg({4, 5, +6});
+	pros::MotorGroup right_mg({-1, -2, -3});
 
 	pros::Motor intake(7);
 
